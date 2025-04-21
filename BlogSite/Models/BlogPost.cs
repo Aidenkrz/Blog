@@ -9,6 +9,7 @@ namespace BlogSite.Models
         public string Author { get; set; } = string.Empty;
         public DateOnly Date { get; set; }
         public string Thumbnail { get; set; } = string.Empty;
+        public string ThumbnailCredits { get; set; } = string.Empty;
         public List<string> Tags { get; set; } = new List<string>();
         public string Slug { get; set; } = string.Empty;
         public string HtmlContent { get; set; } = string.Empty;

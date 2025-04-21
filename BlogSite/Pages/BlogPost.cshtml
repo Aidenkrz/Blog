@@ -30,6 +30,10 @@
              {
                  <img src="@Url.Content(Model.Post.Thumbnail)" class="thumbnail img-fluid rounded mt-3 mb-2" alt="@Model.Post.Title thumbnail">
              }
+            @if (!string.IsNullOrEmpty(Model.Post.ThumbnailCredits))
+             {
+                 <span class="thumbnail mt-3 mb-2">@Model.Post.ThumbnailCredits</span>
+             }
         </header>
 
         <section class="blog-post-content">

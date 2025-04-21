@@ -86,6 +86,7 @@ namespace BlogSite.Services
                         Title = metadata.GetValueOrDefault("title", "Untitled")?.ToString() ?? "Untitled",
                         Author = metadata.GetValueOrDefault("author", "Unknown")?.ToString() ?? "Unknown",
                         Thumbnail = metadata.GetValueOrDefault("thumbnail", "")?.ToString() ?? "",
+                        ThumbnailCredits = metadata.GetValueOrDefault("thumbnailCredits", "")?.ToString() ?? "",
                         Tags = metadata.TryGetValue("tags", out var tagsObj) && tagsObj is List<object> tagsList
                                ? tagsList.Select(t => t?.ToString() ?? string.Empty).ToList()
                                : new List<string>(),

@@ -72,6 +72,8 @@ pre {
 .thumbnail {
     display: block;
     margin: auto;
+    text-align: center;
+    color: #a89984aa;
 }
 
 code {

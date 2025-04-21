@@ -2,7 +2,8 @@
 title: "New blog!"
 author: "Durk"
 date: "2025-04-20"
-thumbnail: "/images/thumbnails/banner.png"
+thumbnail: "/images/thumbnails/biweekly-001.png"
+thumbnailCredits: "Credit goes to our headmin, Rouge2t7 on Discord for the cool artwork."
 tags: ["Intro"]
 soundtrackUrl: /audio/thefuturesoon.mp3
 ---
