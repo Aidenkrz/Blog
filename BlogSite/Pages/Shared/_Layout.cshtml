@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GooBlog</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BlogSite.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" integrity="sha384-hIoBPJpTUs74ddyc4bFZSM1TVlQDA60VBbJS0oA934VSz82sBx1X7kSx2ATBDIyd" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+
+    @if (ViewData["MetaDescription"] is string metaDesc && !string.IsNullOrEmpty(metaDesc))
+    {
+        <meta name="description" content="@metaDesc" />
+    }
+    @if (ViewData["CanonicalUrl"] is string canonicalUrl && !string.IsNullOrEmpty(canonicalUrl))
+    {
+        <link rel="canonical" href="@canonicalUrl" />
+        <meta property="og:url" content="@canonicalUrl" />
+    }
+    @if (ViewData["OgTitle"] is string ogTitle && !string.IsNullOrEmpty(ogTitle))
+    {
+        <meta property="og:title" content="@ogTitle" />
+    }
+    @if (ViewData["OgDescription"] is string ogDesc && !string.IsNullOrEmpty(ogDesc))
+    {
+        <meta property="og:description" content="@ogDesc" />
+    }
+    @if (ViewData["OgType"] is string ogType && !string.IsNullOrEmpty(ogType))
+    {
+        <meta property="og:type" content="@ogType" />
+    }
+    <meta property="og:site_name" content="GooBlog" />
+    @if (ViewData["OgImage"] is string ogImage && !string.IsNullOrEmpty(ogImage))
+    {
+        <meta property="og:image" content="@ogImage" />
+    }
+
+</head>
+<body>
+    <div class="scroll-progress-bar-container">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3 sticky-top">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">GooBlog</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    <form class="d-flex ms-auto" asp-page="/Search" method="get">
+                        <input class="form-control form-control-sm me-2" type="search" placeholder="Search Posts..." aria-label="Search" name="q">
+                        <button class="btn btn-sm btn-outline-light" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container mt-4"> 
+        <main role="main" class="pb-3"> 
+            @RenderBody()
+        </main>
+    </div> 
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <div id="audio-player-widget" class="audio-widget">
+        <audio id="post-audio-player" preload="metadata" style="display: none;"></audio>
+        <img id="audio-album-art" alt="Album Art" class="audio-widget-art" style="display: none;"/>
+        <div class="audio-widget-info">
+            <div id="audio-title" class="audio-widget-title"></div>
+            <div id="audio-artist" class="audio-widget-artist"></div>
+            <div class="audio-widget-progress-container">
+                <input type="range" id="audio-progress" value="0" max="100" class="audio-widget-progress"/>
+            </div>
+            <div class="audio-widget-controls">
+                 <div class="audio-widget-times">
+                    <span id="audio-current-time">0:00</span> / <span id="audio-total-time">0:00</span>
+                </div>
+                 <button id="audio-play-pause" class="audio-widget-button" aria-label="Play">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                      <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                    </svg>
+                </button>
+                <div class="audio-widget-volume-container">
+                    <button id="audio-volume-button" class="audio-widget-button" aria-label="Adjust Volume">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-up-fill" viewBox="0 0 16 16"> <path d="M11.536 14.01A8.47 8.47 0 0 0 14.026 8a8.47 8.47 0 0 0-2.49-6.01l-.708.707A7.48 7.48 0 0 1 13.025 8a7.48 7.48 0 0 1-2.197 5.303z"/> <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.48 5.48 0 0 1 11.025 8a5.48 5.48 0 0 1-1.61 3.89z"/> <path d="M8.707 11.182A4.5 4.5 0 0 0 10.025 8a4.5 4.5 0 0 0-1.318-3.182L8 5.525A3.5 3.5 0 0 1 9.025 8 3.5 3.5 0 0 1 8 10.475zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06"/> </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="audio-volume-panel" class="audio-widget-volume-panel">
+             <input type="range" orient="vertical" id="audio-volume" min="0" max="100" value="30" class="audio-widget-volume-slider">
+        </div>
+    </div>
+</body>
+</html>

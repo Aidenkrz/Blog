@@ -1,0 +1,89 @@
+@page "{slug}"
+@model BlogSite.Pages.BlogPostModel
+@{}
+
+@if (Model.Post != null)
+{
+    <article class="blog-post container mt-4">
+        <header class="blog-post-header mb-4 border-bottom pb-3">
+            <h1 class="display-5 fw-bold">@Model.Post.Title</h1>
+            @if (Model.Post.Tags.Any())
+            {
+                <div class="mt-2 mb-3 blog-post-tags">
+                    @foreach(var tag in Model.Post.Tags)
+                    {
+                        <a asp-page="/Index" asp-route-tag="@tag" class="badge bg-secondary text-decoration-none me-1">@tag</a>
+                    }
+                </div>
+            }
+            <div class="d-flex align-items-center text-muted mt-3 mb-2">
+                <span>By @Model.Post.Author</span>
+                <span class="mx-2">|</span>
+                <span>@Model.Post.Date.ToString("MMMM dd, yyyy")</span>
+                @if (Model.Post.ReadingTimeMinutes > 0)
+                {
+                    <span class="mx-2">|</span>
+                    <span>@Model.Post.ReadingTimeMinutes min read</span>
+                }
+            </div>
+             @if (!string.IsNullOrEmpty(Model.Post.Thumbnail))
+             {
+                 <img src="@Url.Content(Model.Post.Thumbnail)" class="thumbnail img-fluid rounded mt-3 mb-2" alt="@Model.Post.Title thumbnail">
+             }
+        </header>
+
+        <section class="blog-post-content">
+            @Html.Raw(Model.Post.HtmlContent)
+        </section>
+
+        @if (Model.GiscusEnabled)
+        {
+            <section class="giscus-comments mt-5 pt-4 border-top">
+                <script src="https://giscus.app/client.js"
+                        data-repo="@Model.GiscusRepo"
+                        data-repo-id="@Model.GiscusRepoId"
+                        data-category="@Model.GiscusCategory"
+                        data-category-id="@Model.GiscusCategoryId"
+                        data-mapping="@Model.GiscusMapping"
+                        data-strict="0"
+                        data-reactions-enabled="@Model.GiscusReactionsEnabled"
+                        data-emit-metadata="@Model.GiscusEmitMetadata"
+                        data-input-position="@Model.GiscusInputPosition"
+                        data-theme="@Model.GiscusTheme"
+                        data-lang="@Model.GiscusLang"
+                        crossorigin="anonymous"
+                        async>
+                </script>
+                <noscript>Please enable JavaScript to view the comments powered by Giscus.</noscript>
+            </section>
+        }
+    </article>
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        The blog post you requested could not be found.
+    </div>
+}
+
+@section Scripts {
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    @if (Model.Post != null && !string.IsNullOrEmpty(Model.Post.SoundtrackUrl))
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                if (typeof initializeAudioPlayer === 'function') {
+                    initializeAudioPlayer({
+                        url: @Json.Serialize(Url.Content(Model.Post.SoundtrackUrl)),
+                        title: @Json.Serialize(Model.Post.SoundtrackTitle ?? System.IO.Path.GetFileNameWithoutExtension(Model.Post.SoundtrackUrl)),
+                        artist: @Json.Serialize(Model.Post.SoundtrackArtist ?? "Unknown Artist"),
+                        artBase64: @Json.Serialize(Model.Post.SoundtrackAlbumArtBase64 ?? "")
+                    });
+                } else {
+                    console.error("initializeAudioPlayer function not found. Ensure site.js is loaded correctly.");
+                }
+            });
+        </script>
+    }
+}

@@ -1,0 +1,67 @@
+﻿@page
+@model IndexModel
+@{}
+
+@if (string.IsNullOrEmpty(Model.CurrentTag))
+{
+    <section class="hero-section text-center mb-5">
+        <h1 class="display-4">Goobstation Blog</h1>
+        <p class="lead text-muted">I just fucking goobed all over the place, not going to lie.</p>
+    </section>
+}
+else
+{
+    <div class="mb-4">
+        <h4>Showing posts tagged: <span class="badge bg-primary">@Model.CurrentTag</span> <a asp-page="/Index" class="ms-2 small">(Clear Filter)</a></h4>
+    </div>
+}
+
+<section class="blog-post-list">
+    <div class="container">
+        <div class="row">
+            @if (Model.Posts.Any())
+            {
+                @foreach (var post in Model.Posts)
+                {
+                    <div class="col-md-6 col-lg-4 mb-4 blog-post-item">
+                        <div class="card h-100 shadow-sm">
+                            @if (!string.IsNullOrEmpty(post.Thumbnail))
+                            {
+                                <img src="@post.Thumbnail" class="card-img-top" alt="@post.Title thumbnail">
+                            }
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">
+                                    <a asp-page="/BlogPost" asp-route-slug="@post.Slug">@post.Title</a>
+                                </h5>
+                                <p class="card-text text-muted small mb-2">
+                                    @post.Date.ToString("MMMM dd, yyyy")
+                                    @if (post.ReadingTimeMinutes > 0)
+                                    {
+                                        <span class="mx-1">&bull;</span>
+                                        <span>@post.ReadingTimeMinutes min read</span>
+                                    }
+                                </p>
+                                <p class="card-text flex-grow-1">@post.Excerpt</p>
+                            </div>
+                            @if (post.Tags.Any())
+                            {
+                                <div class="card-footer bg-transparent border-top-0 pt-0">
+                                    @foreach(var tag in post.Tags)
+                                    {
+                                        <a asp-page="/Index" asp-route-tag="@tag" class="badge bg-secondary text-decoration-none me-1">@tag</a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col">
+                    <p>No blog posts found yet. Check back soon!</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>

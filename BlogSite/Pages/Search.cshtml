@@ -1,0 +1,52 @@
+@page
+@model SearchModel
+@{}
+
+<h1 class="mb-4">Search Results for "@Model.Query"</h1>
+
+@if (!Model.SearchResults.Any())
+{
+    <p>No posts found matching your search query.</p>
+    @if (string.IsNullOrWhiteSpace(Model.Query))
+    {
+        <p>Please enter a search term in the box above.</p>
+    }
+}
+else
+{
+    <p>Found @Model.SearchResults.Count result(s):</p>
+
+    <section class="search-results-list mt-4">
+        <div class="container p-0">
+            <div class="row">
+                @foreach (var post in Model.SearchResults)
+                {
+                    <div class="col-md-6 col-lg-4 mb-4 blog-post-item">
+                        <div class="card h-100 shadow-sm">
+                            @if (!string.IsNullOrEmpty(post.Thumbnail))
+                            {
+                                <img src="@post.Thumbnail" class="card-img-top" alt="@post.Title thumbnail">
+                            }
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">
+                                    <a asp-page="/BlogPost" asp-route-slug="@post.Slug">@post.Title</a>
+                                </h5>
+                                <p class="card-text text-muted small mb-2">@post.Date.ToString("MMMM dd, yyyy")</p>
+                                <p class="card-text flex-grow-1">@post.Excerpt</p>
+                            </div>
+                            @if (post.Tags.Any())
+                            {
+                                <div class="card-footer bg-transparent border-top-0 pt-0">
+                                    @foreach(var tag in post.Tags)
+                                    {
+                                        <a asp-page="/Index" asp-route-tag="@tag" class="badge bg-secondary text-decoration-none me-1">@tag</a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
