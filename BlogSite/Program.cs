@@ -1,6 +1,16 @@
 using BlogSite.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = 
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear(); 
+    options.KnownProxies.Clear();
+});
 
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
@@ -10,13 +20,17 @@ builder.Services.AddSingleton<DiscordNotificationService>();
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
+app.UseForwardedHeaders(); 
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseExceptionHandler("/Error");
+
+app.Use(async (context, next) => {
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Request Scheme: {Scheme}, Remote IP: {RemoteIp}", 
+        context.Request.Scheme, context.Connection.RemoteIpAddress);
+    await next();
+});
 
 app.UseRouting();
 
